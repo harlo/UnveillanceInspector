@@ -1,14 +1,15 @@
 import csv, os, re
+from Levenshtein import distance
 
-from vars import ideal_tiff, TiffAspect, delimiter, quotechar, quoting
+from vars import ideal_tiff, TiffAspect, delimiter, quotechar, quoting, missing_value
 from conf import output_dir
 
 def analyzeTiff(file):
 	tiff_re = '%s(\s+)%s(\s+)\dx\d(\s+).+(\s+)\((.*)\)'
 	tiff_aspects = []
 	
-	for tiff in [(t.tag_position, t.label, t.type) for t in ideal_tiff]:
-		value = "n/a"
+	for tiff in [(t.tag_position, t.label, t.type, t.ideal) for t in ideal_tiff]:
+		value = missing_value
 		with open(file, 'rb') as f:
 			for line in f:
 				match = re.findall(re.compile(tiff_re % (tiff[0], tiff[1])), line.strip())
@@ -16,6 +17,10 @@ def analyzeTiff(file):
 					values = [m.strip() for m in list(match[0]) if re.match(r'(\s)+', m) is None]
 					if len(values) == 1:
 						value = values[0].replace("\"", '')
+						if tiff[2] == str:
+							# take levenshtein distance from ideal value
+							value = "%.9f" % (distance(tiff[3], value))
+						
 						break
 		
 		tiff_aspects.append(TiffAspect(tiff[0], tiff[1], value, tiff[2]))

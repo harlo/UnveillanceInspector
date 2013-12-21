@@ -29,6 +29,7 @@ ideal_tiff = [
 	TiffAspect('0x8825', 'GpsInfoIFDPointer', ideal['GPS_INFO_IFD_POINTER'], str)
 ]
 
+missing_value = "NaN"
 delimiter = ' '
 quotechar = '|'
 quoting = csv.QUOTE_MINIMAL
