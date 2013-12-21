@@ -14,6 +14,7 @@
 """
 from collections import namedtuple
 from conf import tiff_ideals as ideal
+import csv
 
 TiffAspect = namedtuple('TiffAspect', 'tag_position label ideal type')
 ideal_tiff = [
@@ -27,3 +28,7 @@ ideal_tiff = [
 	TiffAspect('0x8769', 'ExifIFDPointer', ideal['EXIF_IFD_POINTER'], str),
 	TiffAspect('0x8825', 'GpsInfoIFDPointer', ideal['GPS_INFO_IFD_POINTER'], str)
 ]
+
+delimiter = ' '
+quotechar = '|'
+quoting = csv.QUOTE_MINIMAL

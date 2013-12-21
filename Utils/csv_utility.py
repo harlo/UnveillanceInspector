@@ -1,6 +1,6 @@
 import csv, os, re
 
-from vars import ideal_tiff, TiffAspect
+from vars import ideal_tiff, TiffAspect, delimiter, quotechar, quoting
 from conf import output_dir
 
 def analyzeTiff(file):
@@ -25,28 +25,35 @@ def analyzeTiff(file):
 	
 	return None
 
-def indexAll(homedir):
-	with open(os.path.join(output_dir, 'test.csv'), 'wb+') as csv_file:
-		tiff_csv = csv.writer(csv_file, delimiter=' ', 
-			quotechar='|', quoting=csv.QUOTE_MINIMAL)
+def index(base, output="training_data.csv"):
+	with open(os.path.join(output_dir, output), 'a') as csv_file:
+		tiff_csv = csv.writer(csv_file, delimiter=delimiter,
+			quotechar=quotechar, quoting=quoting)
+		
+		corresponding_file = None
+		values = None
 	
-		labels = [tiff.label for tiff in ideal_tiff]
-		labels.append("AssetPath")
-		tiff_csv.writerow(labels)
-
-		for root, dir, files in os.walk(homedir):
-			corresponding_file = None
-			values = None
-
+		for root, dir, files in os.walk(base):
 			for file in files:
 				if re.match(r'[^high_|low_|med_|thumb_].*\.(jpg|mkv)', file):
 					corresponding_file = os.path.join(root, file)
-			
+		
 				if re.match(r'.*\.tiff\.txt', file):
 					tiff = analyzeTiff(os.path.join(root, file))
 					if tiff is not None:
 						values = [t.ideal for t in tiff]
-		
+	
 			if corresponding_file is not None and values is not None:
 				values.append(os.path.join(root, corresponding_file))
 				tiff_csv.writerow(values)
+
+def indexAll(homedir, output="training_data.csv"):
+	with open(os.path.join(output_dir, output), 'wb+') as csv_file:
+		tiff_csv = csv.writer(csv_file, delimiter=delimiter, 
+			quotechar=quotechar, quoting=quoting)
+	
+		labels = [tiff.label for tiff in ideal_tiff]
+		labels.append("AssetPath")
+		tiff_csv.writerow(labels)
+	
+	index(homedir)
