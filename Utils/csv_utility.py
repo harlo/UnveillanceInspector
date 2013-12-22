@@ -61,4 +61,4 @@ def indexAll(homedir, output="training_data.csv"):
 		labels.append("AssetPath")
 		tiff_csv.writerow(labels)
 	
-	index(homedir)
+	index(homedir, output=output)
