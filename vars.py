@@ -18,7 +18,7 @@ import csv
 
 TiffAspect = namedtuple('TiffAspect', 'tag_position label ideal type')
 ideal_tiff = [
-	TiffAspect('0x0201', 'ThumbnailOffset', ideal['THUMBNAIL_OFFSET'], int),
+	TiffAspect('0x0201', 'ThumbnailOffset', ideal['THUMBNAIL_OFFSET'], str),
 	TiffAspect('0x0131', 'Software', ideal['SOFTWARE'], str),
 	TiffAspect('0x0000', 'GPSVersion', ideal['GPS_VERSION'], str),
 	TiffAspect('0x010f', 'Make', ideal['MAKE'], str),

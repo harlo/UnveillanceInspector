@@ -1,28 +1,39 @@
-import csv, os, re
+import csv, os, re, string
 from Levenshtein import ratio
 
 from vars import ideal_tiff, TiffAspect, delimiter, quotechar, quoting, missing_value
 from conf import output_dir
 
 def analyzeTiff(file):
-	tiff_re = '%s(\s+)%s(\s+)\dx\d(\s+).+(\s+)\((.*)\)'
+	numbers = "".join([str(i) for i in range(0,10)])
+	tiff_re = '%s\s+%s\s+\d+x\d+\s+.+\s+\((.*)\)'
 	tiff_aspects = []
 	
-	for tiff in [(t.tag_position, t.label, t.type, t.ideal) for t in ideal_tiff]:
+	for tiff in [(t.tag_position, t.label, t.ideal, t.type) for t in ideal_tiff]:
 		value = missing_value
+		ideal = str(tiff[2])
+		pattern = tiff_re % (tiff[0], tiff[1])
+		
+		if tiff[2] is None:
+			if tiff[3] == str:
+				ideal = string.letters + numbers
+			elif tiff[3] == int:
+				ideal = numbers
+		
 		with open(file, 'rb') as f:
 			for line in f:
-				match = re.findall(re.compile(tiff_re % (tiff[0], tiff[1])), line.strip())
+				match = re.findall(re.compile(pattern), line.strip())
 				if len(match) == 1:
-					values = [m.strip() for m in list(match[0]) if re.match(r'(\s)+', m) is None]
-					if len(values) == 1:
-						value = values[0].replace("\"", '')
-						if tiff[2] == str:
-							# take levenshtein ratio from ideal value
-							value = "%.9f" % ratio(tiff[3], value)
-						
-						break
-		
+					# take levenshtein ratio from ideal value
+					value = "%.9f" % ratio(ideal, str(match[0].replace("\"", '')))
+					break
+
+		if value == missing_value:
+			if tiff[2] is None:
+				value = 1
+			else:
+				value = 0
+
 		tiff_aspects.append(TiffAspect(tiff[0], tiff[1], value, tiff[2]))
 	
 	if len(tiff_aspects) > 0:
