@@ -30,6 +30,6 @@ ideal_tiff = [
 ]
 
 missing_value = "NaN"
-delimiter = ' '
+delimiter = ','
 quotechar = '|'
 quoting = csv.QUOTE_MINIMAL

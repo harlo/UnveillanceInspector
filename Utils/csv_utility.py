@@ -1,5 +1,5 @@
 import csv, os, re
-from Levenshtein import distance
+from Levenshtein import ratio
 
 from vars import ideal_tiff, TiffAspect, delimiter, quotechar, quoting, missing_value
 from conf import output_dir
@@ -18,8 +18,8 @@ def analyzeTiff(file):
 					if len(values) == 1:
 						value = values[0].replace("\"", '')
 						if tiff[2] == str:
-							# take levenshtein distance from ideal value
-							value = "%.9f" % (distance(tiff[3], value))
+							# take levenshtein ratio from ideal value
+							value = "%.9f" % ratio(tiff[3], value)
 						
 						break
 		
