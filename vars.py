@@ -18,7 +18,7 @@ import csv
 
 TiffAspect = namedtuple('TiffAspect', 'tag_position label ideal type')
 ideal_tiff = [
-	TiffAspect('0x0201', 'ThumbnailOffset', ideal['THUMBNAIL_OFFSET'], str),
+	TiffAspect('0x0201', 'ThumbnailOffset', ideal['THUMBNAIL_OFFSET'], int),
 	TiffAspect('0x0131', 'Software', ideal['SOFTWARE'], str),
 	TiffAspect('0x0000', 'GPSVersion', ideal['GPS_VERSION'], str),
 	TiffAspect('0x010f', 'Make', ideal['MAKE'], str),
@@ -28,6 +28,14 @@ ideal_tiff = [
 	TiffAspect('0x8769', 'ExifIFDPointer', ideal['EXIF_IFD_POINTER'], str),
 	TiffAspect('0x8825', 'GpsInfoIFDPointer', ideal['GPS_INFO_IFD_POINTER'], str)
 ]
+
+MetadataAspect = namedtuple('MetadataAspect', 'label ideal type')
+ideal_metadata = [
+	MetadataAspect('HasJ3M', True, bool),
+	MetadataAspect('WasEncrypted', True, bool),
+]
+
+labels = [l.label for l in ideal_tiff] + [l.label for l in ideal_metadata] + ["AssetPath"]
 
 missing_value = "NaN"
 delimiter = ','
